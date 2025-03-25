@@ -1,5 +1,7 @@
 import "./style.css";
-import { Project, ProjectManager, ToDo } from "./todo";
+import { ProjectManager } from "./todo";
+
+const projectManager = new ProjectManager();
 
 function toggleVisibility(visibilityElement) {
   visibilityElement.classList.toggle("display");
@@ -18,7 +20,8 @@ createProjectButton.addEventListener("click", () =>
 );
 
 function loadProjects() {
-  const allProjectsData = JSON.parse(localStorage.getItem("allProjects")) || [];
+  // const allProjectsData = JSON.parse(localStorage.getItem("allProjects")) || [];
+  const allProjectsData = projectManager.getAllProjects();
   if (allProjectsData.length > 0) {
     projectsContent.innerHTML = allProjectsData
       .map(
@@ -62,23 +65,23 @@ loadProjects();
 
 // divContent.innerText = "Todo Application";
 
-const projectManager = new ProjectManager();
-const schoolProject = projectManager.addProject("Third project");
-schoolProject.addTodo(
-  "finish assignment",
-  "research and finish mathematics assignment.",
-  "february 12, 2026",
-  true,
-  "urgent",
-  "no notes"
-);
-schoolProject.addTodo(
-  "finish biology",
-  "research and finish mathematics assignment.",
-  "february 12, 2026",
-  true,
-  "urgent",
-  "no notes"
-);
-console.log(schoolProject.projectTodos);
-console.log(projectManager.getAllProjects());
+console.log(projectManager);
+// const schoolProject = projectManager.addProject("Third project");
+// schoolProject.addTodo(
+//   "finish assignment",
+//   "research and finish mathematics assignment.",
+//   "february 12, 2026",
+//   true,
+//   "urgent",
+//   "no notes"
+// );
+// schoolProject.addTodo(
+//   "finish biology",
+//   "research and finish mathematics assignment.",
+//   "february 12, 2026",
+//   true,
+//   "urgent",
+//   "no notes"
+// );
+// console.log(schoolProject.projectTodos);
+// console.log(projectManager.getAllProjects());
