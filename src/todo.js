@@ -29,6 +29,7 @@ class ProjectManager {
       name,
       projectId: id ? id : crypto.randomUUID(),
       projectTodos: [],
+      dateCreated: new Date().toDateString(),
     };
     this.allProjects.push(newProject);
     this.saveProjectsToStorage();
@@ -51,6 +52,7 @@ class ProjectManager {
       priority,
       notes,
       todoId: crypto.randomUUID(),
+      dateCreated: new Date().toDateString(),
     };
   }
 

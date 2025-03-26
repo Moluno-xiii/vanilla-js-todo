@@ -1,5 +1,5 @@
 body {
-  background-color: rebeccapurple;
+  background-color: gray;
   color: black;
   font-family: "Courier New", Courier, monospace;
 }
@@ -69,6 +69,9 @@ form {
   max-width: 500px;
   visibility: hidden;
   margin: 20px 0px;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .display {
@@ -96,10 +99,17 @@ button {
   max-width: fit-content;
   padding: 6px;
   border-radius: 5px;
+  margin: 20px 0px;
+  max-width: 600px;
 }
 
 .todoDetails {
   display: flex;
   flex-direction: column;
   gap: 3px;
+}
+
+.deleteTodoButton {
+  background-color: crimson;
+  margin-bottom: 10px;
 }

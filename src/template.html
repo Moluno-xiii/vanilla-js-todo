@@ -6,14 +6,6 @@
     <title>ToDo Application</title>
   </head>
   <body>
-    <header>
-      <nav>
-        <button id="home-btn">Home</button>
-        <button id="menu-btn">Menu</button>
-        <button id="contact-btn">Contact</button>
-      </nav>
-    </header>
-
     <div id="content">
       <div id="projectsDiv"></div>
 
@@ -21,7 +13,13 @@
         <button id="createNewTodoButton">Create new Todo</button>
         <button id="createNewProjectButton">Create new Project</button>
       </div>
-
+      <form action="" id="addProjectForm">
+        <div class="formItem">
+          <label for="name">name</label>
+          <input required type="text" id="name" name="name" />
+        </div>
+        <button type="submit">submit</button>
+      </form>
       <form action="" id="addTodoForm">
         <div class="formItem">
           <label for="title"> title </label>
@@ -68,14 +66,6 @@
         <div class="formItem finished">
           <label for="finished"> finished </label>
           <input required type="checkbox" name="finished" id="finished" />
-        </div>
-        <button type="submit">submit</button>
-      </form>
-
-      <form action="" id="addProjectForm">
-        <div class="formItem">
-          <label for="name">name</label>
-          <input required type="text" id="name" name="name" />
         </div>
         <button type="submit">submit</button>
       </form>
