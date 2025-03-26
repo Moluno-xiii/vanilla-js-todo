@@ -7,68 +7,91 @@
   </head>
   <body>
     <div id="content">
-      <div id="projectsDiv"></div>
-
       <div id="ctaButtons">
         <button id="createNewTodoButton">Create new Todo</button>
         <button id="createNewProjectButton">Create new Project</button>
       </div>
-      <form action="" id="addProjectForm">
-        <div class="formItem">
-          <label for="name">name</label>
-          <input required type="text" id="name" name="name" />
-        </div>
-        <button type="submit">submit</button>
-      </form>
-      <form action="" id="addTodoForm">
-        <div class="formItem">
-          <label for="title"> title </label>
-          <input required type="text" name="title" id="title" />
-        </div>
-        <div class="formItem">
-          <label for="description"> description </label>
-          <textarea type="text" name="description" id="description"></textarea>
-        </div>
-        <div class="formItem">
-          <label for="notes"> notes </label>
-          <input required type="text" name="notes" id="notes" />
-        </div>
-        <div class="formItem">
-          <label>Priority</label>
+      <div id="projectsDiv"></div>
+    </div>
 
-          <label for="high">
+    <div class="modal-overlay">
+      <div class="modal">
+        <button class="close-modal">&times;</button>
+        <h2>Add Project / Todo Form</h2>
+        <form action="" id="addProjectForm">
+          <div class="formItem">
+            <label for="name">name</label>
+            <input required type="text" id="name" name="name" />
+          </div>
+          <button type="submit">submit</button>
+        </form>
+
+        <form action="" id="addTodoForm">
+          <div class="formItem">
+            <label for="title"> title </label>
+            <input required type="text" name="title" id="title" />
+          </div>
+          <div class="formItem">
+            <label for="description"> description </label>
+            <textarea
+              type="text"
+              name="description"
+              id="description"
+            ></textarea>
+          </div>
+          <div class="formItem">
+            <label for="notes"> notes </label>
             <input
+              title="input additional notes for your todo"
               required
-              type="radio"
-              name="priority"
-              id="high"
-              value="high"
+              type="text"
+              name="notes"
+              id="notes"
             />
-            High
-          </label>
+          </div>
+          <div class="formItem">
+            <label>Priority</label>
 
-          <label for="low">
-            <input required type="radio" name="priority" id="low" value="low" />
-            Low
-          </label>
+            <label for="high">
+              <input
+                required
+                type="radio"
+                name="priority"
+                id="high"
+                value="high"
+              />
+              High
+            </label>
 
-          <label for="medium">
-            <input
-              required
-              type="radio"
-              name="priority"
-              id="medium"
-              value="medium"
-            />
-            Medium
-          </label>
-        </div>
-        <div class="formItem finished">
-          <label for="finished"> finished </label>
-          <input required type="checkbox" name="finished" id="finished" />
-        </div>
-        <button type="submit">submit</button>
-      </form>
+            <label for="low">
+              <input
+                required
+                type="radio"
+                name="priority"
+                id="low"
+                value="low"
+              />
+              Low
+            </label>
+
+            <label for="medium">
+              <input
+                required
+                type="radio"
+                name="priority"
+                id="medium"
+                value="medium"
+              />
+              Medium
+            </label>
+          </div>
+          <div class="formItem finished">
+            <label for="finished"> finished </label>
+            <input type="checkbox" name="finished" id="finished" />
+          </div>
+          <button type="submit">submit</button>
+        </form>
+      </div>
     </div>
   </body>
 </html>

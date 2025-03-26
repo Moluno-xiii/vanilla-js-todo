@@ -4,7 +4,6 @@ class Alert {
   }
 }
 
-// add date created to both todos and projects.
 class ProjectManager {
   constructor() {
     if (!ProjectManager.instance) {

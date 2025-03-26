@@ -3,9 +3,29 @@ import { ProjectManager } from "./todo";
 
 const projectManager = new ProjectManager();
 
-function toggleVisibility(visibilityElement) {
-  visibilityElement.classList.toggle("display");
+const closeModalBtn = document.querySelector(".close-modal");
+const modalOverlay = document.querySelector(".modal-overlay");
+
+function openForm(formDiv) {
+  modalOverlay.classList.add("active");
+  formDiv.classList.add("display");
 }
+
+function closeForm(formDiv) {
+  modalOverlay.classList.remove("active");
+  formDiv.classList.remove("display");
+}
+
+closeModalBtn.addEventListener("click", () => {
+  closeForm(projectForm);
+  closeForm(todoForm);
+});
+
+modalOverlay.addEventListener("click", (e) => {
+  if (e.target === modalOverlay) {
+    modalOverlay.classList.remove("active");
+  }
+});
 
 const divContent = document.getElementById("content");
 const projectsContent = document.getElementById("projectsDiv");
@@ -14,10 +34,12 @@ const projectForm = document.getElementById("addProjectForm");
 const createTodoButton = document.getElementById("createNewTodoButton");
 const createProjectButton = document.getElementById("createNewProjectButton");
 
-createTodoButton.addEventListener("click", () => toggleVisibility(todoForm));
-createProjectButton.addEventListener("click", () =>
-  toggleVisibility(projectForm)
-);
+createTodoButton.addEventListener("click", function () {
+  openForm(todoForm);
+});
+createProjectButton.addEventListener("click", function () {
+  openForm(projectForm);
+});
 
 function loadProjects() {
   const allProjectsData = projectManager.getAllProjects();
@@ -59,7 +81,7 @@ function loadProjects() {
       button.addEventListener("click", function () {
         const projectId = this.getAttribute("data-project-id");
         console.log("Project ID:", projectId);
-        toggleVisibility(todoForm);
+        openForm(todoForm);
       });
     });
 
@@ -88,6 +110,10 @@ function formEvent(event) {
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData);
   loadProjects();
+  closeForm(projectForm);
+  closeForm(todoForm);
+  projectForm.reset();
+  todoForm.reset();
   console.log(data);
 }
 
@@ -117,3 +143,4 @@ console.log(projectManager.getAllProjects());
 // );
 
 // ctrl alt x on browser opens the ai tab.
+// when we add a project, or delete a project, reload the projects data.
