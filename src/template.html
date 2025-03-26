@@ -10,6 +10,7 @@
       <div id="ctaButtons">
         <button id="createNewTodoButton">Create new Todo</button>
         <button id="createNewProjectButton">Create new Project</button>
+        <button id="deleteAllProjectsButton">Delete all Projects</button>
       </div>
       <div id="projectsDiv"></div>
     </div>
@@ -31,6 +32,7 @@
             <label for="title"> title </label>
             <input required type="text" name="title" id="title" />
           </div>
+          <input type="hidden" id="todoProjectId" name="projectId" />
           <div class="formItem">
             <label for="description"> description </label>
             <textarea
