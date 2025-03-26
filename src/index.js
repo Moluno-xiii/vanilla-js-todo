@@ -40,9 +40,6 @@ const deleteAllProjectsButton = document.getElementById(
   "deleteAllProjectsButton"
 );
 
-createTodoButton.addEventListener("click", function () {
-  openForm(todoForm);
-});
 createProjectButton.addEventListener("click", function () {
   openForm(projectForm);
 });
@@ -136,11 +133,9 @@ function submitTodo(event) {
   event.preventDefault();
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData);
-  console.log("Project ID :", data.projectId);
   loadProjects();
   closeForm(todoForm);
   todoForm.reset();
-  console.log(data);
   projectManager.addTodoToProject(
     data.title,
     data.description,
@@ -159,15 +154,9 @@ function addProjectFormEvent(event) {
   const data = Object.fromEntries(formData);
   closeForm(projectForm);
   projectForm.reset();
-  console.log(data);
   projectManager.createNewProject(data.name);
   loadProjects();
 }
-console.log(projectManager.getAllProjects());
 loadProjects();
 
-// divContent.innerText = "Todo Application";
-
 // ctrl alt x on browser opens the ai tab.
-// when we add a project, or delete a project, reload the projects data.
-// add a confirmation alert when performing delete operations.
