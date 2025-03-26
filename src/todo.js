@@ -2,65 +2,90 @@ class Alert {
   static AlertMesage(message) {
     alert(message);
   }
+
+  static ConfirmDelete() {
+    return confirm("Are you sure you want to delete?");
+  }
 }
 
 class ProjectManager {
   constructor() {
     if (!ProjectManager.instance) {
-      this.allProjects = [];
+      this.allProjects = this.loadProjectFromStorage();
+      ProjectManager.instance = this;
     }
     return ProjectManager.instance;
   }
 
-  addProject(name) {
-    const newProject = new Project(name);
+  loadProjectFromStorage() {
+    try {
+      const storedData = localStorage.getItem("allProjects");
+      return storedData ? JSON.parse(storedData) : [];
+    } catch (error) {
+      console.error("Failed to parse stored projects", error);
+      return [];
+    }
+  }
+
+  deleteAllProjects() {
+    if (Alert.ConfirmDelete()) {
+      this.allProjects = [];
+      this.saveProjectsToStorage();
+      Alert.AlertMesage("Deleted sucessfully");
+    }
+  }
+
+  createNewProject(name, id) {
+    const newProject = {
+      name,
+      projectId: id ? id : crypto.randomUUID(),
+      projectTodos: [],
+      dateCreated: new Date().toDateString(),
+    };
     this.allProjects.push(newProject);
-    console.log("new project created", newProject);
-    localStorage.setItem("allProjects", JSON.stringify(this.allProjects));
-
-    Alert.AlertMesage("Project Added successfully");
-    return newProject;
+    this.saveProjectsToStorage();
+    Alert.AlertMesage(`Project "${name}" created successfully.`);
   }
 
-  getProjectById(id) {
-    return this.allProjects.find((project) => project.projectId === id);
+  deleteProject(projectId) {
+    if (Alert.ConfirmDelete()) {
+      const project = this.findProjectById(projectId);
+      this.allProjects = this.allProjects.filter(
+        (project) => project.projectId !== projectId
+      );
+      Alert.AlertMesage(`Project "${project.name}" deleted successfully.`);
+      this.saveProjectsToStorage();
+    }
   }
 
-  getAllProjects() {
-    return JSON.parse(localStorage.getItem("allProjects") || []);
+  createNewTodo(title, description, dueDate, finished, priority, notes) {
+    return {
+      title,
+      description,
+      dueDate,
+      finished,
+      priority,
+      notes,
+      todoId: crypto.randomUUID(),
+      dateCreated: new Date().toDateString(),
+    };
   }
 
-  deleteProject(id) {
-    this.allProjects = this.allProjects.filter(
-      (project) => project.projectId !== id
-    );
-    localStorage.setItem("allProjects", JSON.stringify(this.allProjects));
-    console.log("project deleted successfully");
-    Alert.AlertMesage("Project deleted successfully.");
-  }
-}
+  addTodoToProject(
+    title,
+    description,
+    dueDate,
+    finished,
+    priority,
+    notes,
+    projectId
+  ) {
+    const project = this.findProjectById(projectId);
+    if (!project) {
+      return Alert.AlertMesage(`Project not found.`);
+    }
 
-class ToDo {
-  constructor(title, description, dueDate, finished, priority, notes) {
-    this.title = title;
-    this.description = description;
-    this.dueDate = dueDate;
-    this.finished = finished;
-    this.priority = priority;
-    this.notes = notes;
-    this.todoId = crypto.randomUUID();
-  }
-}
-
-class Project {
-  constructor(name) {
-    this.name = name;
-    this.projectId = crypto.randomUUID();
-    this.projectTodos = [];
-  }
-
-  addTodo(title, description, dueDate, finished, priority, notes) {
-    let newTodo = new ToDo(
+    const newTodo = this.createNewTodo(
       title,
       description,
       dueDate,
@@ -68,26 +93,38 @@ class Project {
       priority,
       notes
     );
-    this.projectTodos.push(newTodo);
+    project.projectTodos.push(newTodo);
+    this.saveProjectsToStorage();
+    Alert.AlertMesage(`Todo added to "${project.name}" successfully.`);
   }
 
-  deleteTodoFromProject(todoId) {
-    this.projectTodos = this.projectTodos.filter(
-      (todo) => todo.todoId !== todoId
-    );
-    console.log("Todo deleted successfully");
-    console.log(this.projectTodos);
-    Alert.AlertMesage("Todo Deleted Successfully");
+  deleteTodoFromProject(projectId, todoId) {
+    if (Alert.ConfirmDelete()) {
+      const project = this.findProjectById(projectId);
+
+      if (project) {
+        project.projectTodos = project.projectTodos.filter(
+          (todo) => todo.todoId !== todoId
+        );
+        this.saveProjectsToStorage();
+        Alert.AlertMesage(`Todo deleted from "${project.name}" successfully!`);
+      } else {
+        Alert.AlertMesage("Project not found");
+      }
+    }
+  }
+
+  findProjectById(projectId) {
+    return this.allProjects.find((project) => project.projectId === projectId);
+  }
+
+  getAllProjects() {
+    return this.allProjects;
+  }
+
+  saveProjectsToStorage() {
+    localStorage.setItem("allProjects", JSON.stringify(this.allProjects));
   }
 }
 
-// view all projects.
-// delete a todo
-// view all todos in each project.
-// add color for different priorities.
-// expand a single todo to see it's details.
-// date.toDateString()
-// sorting
-// when user clicks on the create new todo, create a new project called other todos, and add the todo there.
-
-export { ToDo, Project, ProjectManager };
+export { ProjectManager };

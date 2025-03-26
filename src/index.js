@@ -1,24 +1,55 @@
 import "./style.css";
-import { Project, ProjectManager, ToDo } from "./todo";
+import { ProjectManager } from "./todo";
 
-function toggleVisibility(visibilityElement) {
-  visibilityElement.classList.toggle("display");
+const projectManager = new ProjectManager();
+
+const closeModalBtn = document.querySelector(".close-modal");
+const modalOverlay = document.querySelector(".modal-overlay");
+
+function openForm(formDiv, projectId = null) {
+  modalOverlay.classList.add("active");
+  formDiv.classList.add("display");
+
+  if (formDiv === todoForm && projectId) {
+    document.getElementById("todoProjectId").value = projectId;
+  }
 }
 
-const divContent = document.getElementById("content");
+function closeForm(formDiv) {
+  modalOverlay.classList.remove("active");
+  formDiv.classList.remove("display");
+}
+
+closeModalBtn.addEventListener("click", () => {
+  closeForm(projectForm);
+  closeForm(todoForm);
+});
+
+modalOverlay.addEventListener("click", (e) => {
+  if (e.target === modalOverlay) {
+    modalOverlay.classList.remove("active");
+  }
+});
+
 const projectsContent = document.getElementById("projectsDiv");
 const todoForm = document.getElementById("addTodoForm");
 const projectForm = document.getElementById("addProjectForm");
 const createTodoButton = document.getElementById("createNewTodoButton");
 const createProjectButton = document.getElementById("createNewProjectButton");
-
-createTodoButton.addEventListener("click", () => toggleVisibility(todoForm));
-createProjectButton.addEventListener("click", () =>
-  toggleVisibility(projectForm)
+const deleteAllProjectsButton = document.getElementById(
+  "deleteAllProjectsButton"
 );
 
+createProjectButton.addEventListener("click", function () {
+  openForm(projectForm);
+});
+deleteAllProjectsButton.addEventListener("click", function () {
+  projectManager.deleteAllProjects();
+  loadProjects();
+});
+
 function loadProjects() {
-  const allProjectsData = JSON.parse(localStorage.getItem("allProjects")) || [];
+  const allProjectsData = projectManager.getAllProjects();
   if (allProjectsData.length > 0) {
     projectsContent.innerHTML = allProjectsData
       .map(
@@ -26,59 +57,106 @@ function loadProjects() {
         <div class="projectDiv">
           <h3>${project.name}</h3>
           <p>Project ID: ${project.projectId || "N/A"}</p>
+          <p>Date Created: ${project.dateCreated || "N/A"}</p>
           <ul class='todoDetails'>
-          ${project.projectTodos.map(
-            (todo) => `
-            <li>${todo.title}</li>
+          ${project.projectTodos
+            .map(
+              (todo) => `
+              <h2>${todo.title}</h2>
+              <p>Todo ID: ${todo.todoId || "N/A"}</p>
             <li>${todo.description}</li>
             <li>${todo.notes}</li>
             <li>${todo.priority}</li>
+            <li>date created: ${todo.dateCreated}</li>
             <li>${
               todo.finished.toLowerCase() === "on" ? "Finished" : "Not Finished"
             }</li>
-            `
-          )}
+            <button data-project-id="${project.projectId}" data-todo-id="${
+                todo.todoId
+              }" class="deleteTodoButton">
+                  Delete todo
+            </button>`
+            )
+            .join("")}
           </ul>
+          <div class="projectCta">
+          <button class="addTodoButton" data-project-id="${
+            project.projectId
+          }">Add Todo</button>
+          <button class="deleteProjectButton" data-project-id="${
+            project.projectId
+          }">Delete Project</button>
+          </div>
         </div>
       `
       )
       .join("");
+    document.querySelectorAll(".addTodoButton").forEach((button) => {
+      button.addEventListener("click", function () {
+        const projectId = this.getAttribute("data-project-id");
+        openForm(todoForm, projectId);
+      });
+    });
+
+    document.querySelectorAll(".deleteTodoButton").forEach((button) => {
+      button.addEventListener("click", function () {
+        const todoId = this.getAttribute("data-todo-id");
+        const projectId = this.getAttribute("data-project-id");
+        projectManager.deleteTodoFromProject(projectId, todoId);
+        loadProjects();
+      });
+    });
+
+    document.querySelectorAll(".deleteProjectButton").forEach((button) => {
+      button.addEventListener("click", function () {
+        const projectId = this.getAttribute("data-project-id");
+        projectManager.deleteProject(projectId);
+        loadProjects();
+      });
+    });
   } else {
-    projectsContent.innerHTML = "<p>No projects available.</p>";
+    projectsContent.innerHTML =
+      "<p>No projects available. Start by adding a project.</p>";
+  }
+
+  if (projectManager.getAllProjects().length > 1) {
+    deleteAllProjectsButton.classList.remove("invincible");
+  } else {
+    deleteAllProjectsButton.classList.add("invincible");
   }
 }
-projectForm.addEventListener("submit", formEvent);
-todoForm.addEventListener("submit", formEvent);
 
-function formEvent(event) {
+projectForm.addEventListener("submit", addProjectFormEvent);
+todoForm.addEventListener("submit", submitTodo);
+
+function submitTodo(event) {
   event.preventDefault();
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData);
   loadProjects();
-  console.log(data);
+  closeForm(todoForm);
+  todoForm.reset();
+  projectManager.addTodoToProject(
+    data.title,
+    data.description,
+    data.dueDate,
+    data.finished ? data.finished : "no",
+    data.priority,
+    data.notes,
+    data.projectId
+  );
+  loadProjects();
 }
 
+function addProjectFormEvent(event) {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData);
+  closeForm(projectForm);
+  projectForm.reset();
+  projectManager.createNewProject(data.name);
+  loadProjects();
+}
 loadProjects();
 
-// divContent.innerText = "Todo Application";
-
-const projectManager = new ProjectManager();
-const schoolProject = projectManager.addProject("Third project");
-schoolProject.addTodo(
-  "finish assignment",
-  "research and finish mathematics assignment.",
-  "february 12, 2026",
-  true,
-  "urgent",
-  "no notes"
-);
-schoolProject.addTodo(
-  "finish biology",
-  "research and finish mathematics assignment.",
-  "february 12, 2026",
-  true,
-  "urgent",
-  "no notes"
-);
-console.log(schoolProject.projectTodos);
-console.log(projectManager.getAllProjects());
+// ctrl alt x on browser opens the ai tab.
